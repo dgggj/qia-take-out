@@ -8,6 +8,8 @@ import com.che.qia.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 /**
  * @author xiaoluyouqu
  * #Description CategoryController
@@ -52,13 +54,29 @@ public class CategoryController {
         service.remove(ids);
         return R.success("删除成功");
     }
-    @Autowired
-    public void setService(CategoryService service) {
-        this.service = service;
-    }
+
     @PutMapping
     public R<String> update(@RequestBody Category category){
         service.updateById(category);
         return R.success("修改成功");
     }
+
+
+
+    @GetMapping("/list")
+    public R<List<Category>> list(Category category){
+        LambdaQueryWrapper<Category> categoryLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        categoryLambdaQueryWrapper.eq(category.getType()!=null,Category::getType,category.getType());
+        categoryLambdaQueryWrapper.orderByAsc(Category::getSort).orderByDesc(Category::getUpdateTime);
+        List<Category> list = service.list(categoryLambdaQueryWrapper);
+        return R.success(list);
+
+    }
+    @Autowired
+    public void setService(CategoryService service) {
+        this.service = service;
+    }
+
+
 }
+
