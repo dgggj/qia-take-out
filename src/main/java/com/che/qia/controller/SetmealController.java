@@ -5,15 +5,19 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.che.qia.common.R;
 import com.che.qia.dto.SetmealDto;
 import com.che.qia.entity.Category;
+import com.che.qia.entity.Dish;
 import com.che.qia.entity.Setmeal;
 import com.che.qia.entity.SetmealDish;
 import com.che.qia.service.CategoryService;
+import com.che.qia.service.DishService;
 import com.che.qia.service.SetmealDishService;
 import com.che.qia.service.SetmealService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.websocket.server.PathParam;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,11 +27,13 @@ import java.util.stream.Collectors;
  * #Date: 2022/8/21 19:37
  */
 @RestController
+@Slf4j
 @RequestMapping("/setmeal")
 public class SetmealController {
     private SetmealService setmealService;
     private SetmealDishService setmealDishService;
     private CategoryService categoryService;
+    private DishService dishService;
 
     /**
      * @description:新增套餐，同时保证套餐和菜品的关系
@@ -45,8 +51,8 @@ public class SetmealController {
      * @description:查询套餐信息
      * @author: che
      * @date: 2022/8/21 20:31
-     * @param: 
-     * @return: 
+     * @param:
+     * @return:
      **/
     @GetMapping("/page")
     public R<Page> page(Integer page,Integer pageSize,String name){
@@ -94,8 +100,38 @@ public class SetmealController {
         List<Setmeal> list = setmealService.list(queryWrapper);
         return R.success(list);
     }
+    @PostMapping("/status/{status}")
+    public R<String> status(@PathVariable("status") Integer status, @PathParam("ids") Long ids){
+       Setmeal setmeal= setmealService.getById(ids);
+       log.info("status:{},ids:{}",status,ids);
+        if(status==0){
+            setmeal.setStatus(status);
+            setmealService.updateById(setmeal);
+        }else if(status==1){
+            LambdaQueryWrapper<SetmealDish> queryWrapper=new LambdaQueryWrapper<>();
+            queryWrapper.eq(SetmealDish::getSetmealId,ids);
+           List<SetmealDish> list= setmealDishService.list(queryWrapper);
+           List<Dish>dishes=list.stream().map((item)->{
+               Long id=item.getDishId();
+               return dishService.getById(id);
+           }).collect(Collectors.toList());
+           for(Dish dish:dishes){
+               if(dish.getStatus()==0){
+                   return R.error("该套餐中有菜品已停售");
+               }
+           }
+           setmeal.setStatus(status);
+           setmealService.updateById(setmeal);
+        }else {
+            return R.error("状态码出错");
+        }
+        return R.success("更改状态成功");
+    }
 
-
+    @Autowired
+    public void setDishService(DishService dishService) {
+        this.dishService = dishService;
+    }
 
     @Autowired
     public void setSetmealService(SetmealService setmealService) {
