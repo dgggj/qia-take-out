@@ -14,9 +14,10 @@ public class BaseContext {
      * @return:
      **/
 
+
     private static ThreadLocal<Long> threadLocal=new ThreadLocal();
 
-    public static Long getThreadLocal() {
+    public  static Long getThreadLocal() {
         return threadLocal.get();
     }
 
