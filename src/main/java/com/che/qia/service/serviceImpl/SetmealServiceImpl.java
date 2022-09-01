@@ -31,7 +31,7 @@ public class SetmealServiceImpl extends ServiceImpl<SetmealMapper, Setmeal> impl
         this.save(setmealDto);
         List<SetmealDish> setmealDishes = setmealDto.getSetmealDishes();
         setmealDishes=setmealDishes.stream().map((item->{
-            item.setSetmealId(setmealDto.getId());
+            item.setSetmealId(setmealDto.getCategoryId());
             return item;
         })).collect(Collectors.toList());
         setmealDishService.saveBatch(setmealDishes);

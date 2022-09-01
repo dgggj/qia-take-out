@@ -31,7 +31,6 @@ public class LoginCheckFilter implements Filter {
         String requestURI = request.getRequestURI();
         //2定义不需要处理的请求路径
         String[] urls=new String[]{
-                "/dish/list",
                 "/employee/login",
                 "/employee/logout",
                 "/backend/**",
@@ -39,11 +38,7 @@ public class LoginCheckFilter implements Filter {
                 "/common/**",
                 "/user/sendMsg",
                 "/user/login",
-                "/user/logout",
-                "/doc.html",
-                "/webjars/**",
-                "/swagger-resources",
-                "/v2/api-docs"
+                "/user/logout"
 
         };
         //3判断本次请求是否需要处理

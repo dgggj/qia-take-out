@@ -34,7 +34,6 @@ public class OrdersServiceImpl extends ServiceImpl<OrdersMapper, Orders>implemen
     @Override
     @Transactional
     public void submit(Orders orders) {
-
         //获得用户id
         Long userId = BaseContext.getThreadLocal();
         //查询当前的购物车

@@ -37,6 +37,7 @@ public class ShoppingCartController {
 
         LambdaQueryWrapper<ShoppingCart> queryWrapper=new LambdaQueryWrapper<>();
         queryWrapper.eq(ShoppingCart::getUserId,shoppingCart.getUserId());
+
         if(shoppingCart.getDishId()!=null){
             queryWrapper.eq(ShoppingCart::getDishId,shoppingCart.getDishId());
         }else {

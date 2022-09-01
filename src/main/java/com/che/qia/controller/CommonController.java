@@ -1,7 +1,7 @@
 package com.che.qia.controller;
 
 import com.che.qia.common.R;
-
+import com.sun.deploy.net.HttpResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,7 +13,7 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileInputStream;
-
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.UUID;
 
