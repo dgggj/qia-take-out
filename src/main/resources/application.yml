@@ -3,12 +3,34 @@ server:
 spring:
   application:
     name: qia_take_out
-  datasource:
-    druid:
-      driver-class-name: com.mysql.cj.jdbc.Driver
-      url: jdbc:mysql://192.168.56.20:3306/qia-take-out?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
-      username: root
-      password: root
+  shardingsphere:
+    datasource:
+      names:
+        master,slave
+      #主数据库
+      master:
+        type: com.alibaba.druid.pool.DruidDataSource
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        url: jdbc:mysql://192.168.56.20:3306/take-out?characterEncoding=utf-8
+        username: root
+        password: root
+      #从数据库
+      slave:
+        type: com.alibaba.druid.pool.DruidDataSource
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        url: jdbc:mysql://192.168.56.21:3306/take-out?characterEncoding=utf-8
+        username: root
+        password: root
+    masterslave:
+      load-balance-algorithm-type: round_robin
+      master-data-source-name: master
+      name: dataSource
+      slave-data-source-names: slave
+    props:
+      sql:
+        show: true
+  main:
+    allow-bean-definition-overriding: true
   servlet:
     multipart:
       max-file-size: 100MB
